@@ -1,4 +1,5 @@
 <?php
+
 /** PHP-implementation of "Gauss Conformal Projection
  * (Transverse Mercator), Krügers Formulas".
  * - Parameters for SWEREF99 lat-long to/from RT90 and SWEREF99
@@ -16,8 +17,11 @@
  * 
  * License: http://creativecommons.org/licenses/by-nc-sa/3.0/
  * */
-class GaussKreuger {
 
+namespace Drola\CoordinateTransformationLibrary\Projection;
+
+class GaussKreugerProjection
+{
     protected $axis; // Semi-major axis of the ellipsoid.
     protected $flattening; // Flattening of the ellipsoid.
     protected $central_meridian; // Central meridian for the projection.
@@ -31,145 +35,148 @@ class GaussKreuger {
     // Bessel-variants should only be used if lat/long are given as
     // RT90-lat/long based on the Bessel ellipsoide (from old maps).
     // Parameter: projection (string). Must match if-statement.
-    public function swedish_params($projection) {
+    public function swedish_params($projection)
+    {
         // RT90 parameters, GRS 80 ellipsoid.
-      switch($projection) {
-        case "rt90_7.5_gon_v":
-            $this->grs80_params();
-            $this->central_meridian = 11.0 + 18.375 / 60.0;
-            $this->scale = 1.000006000000;
-            $this->false_northing = -667.282;
-            $this->false_easting = 1500025.141;
-            break;
-        case "rt90_5.0_gon_v":
-            $this->grs80_params();
-            $this->central_meridian = 13.0 + 33.376 / 60.0;
-            $this->scale = 1.000005800000;
-            $this->false_northing = -667.130;
-            $this->false_easting = 1500044.695;
-            break;
-        case "rt90_2.5_gon_v":
-            $this->grs80_params();
-            $this->central_meridian = 15.0 + 48.0 / 60.0 + 22.624306 / 3600.0;
-            $this->scale = 1.00000561024;
-            $this->false_northing = -667.711;
-            $this->false_easting = 1500064.274;
-            break;
-        case "rt90_0.0_gon_v":
-            $this->grs80_params();
-            $this->central_meridian = 18.0 + 3.378 / 60.0;
-            $this->scale = 1.000005400000;
-            $this->false_northing = -668.844;
-            $this->false_easting = 1500083.521;
-            break;
-        case "rt90_2.5_gon_o":
-            $this->grs80_params();
-            $this->central_meridian = 20.0 + 18.379 / 60.0;
-            $this->scale = 1.000005200000;
-            $this->false_northing = -670.706;
-            $this->false_easting = 1500102.765;
-            break;
-        case "rt90_5.0_gon_o":
-            $this->grs80_params();
-            $this->central_meridian = 22.0 + 33.380 / 60.0;
-            $this->scale = 1.000004900000;
-            $this->false_northing = -672.557;
-            $this->false_easting = 1500121.846;
-            break;
-        // RT90 parameters, Bessel 1841 ellipsoid.
-        case "bessel_rt90_7.5_gon_v":
-            $this->bessel_params();
-            $this->central_meridian = 11.0 + 18.0 / 60.0 + 29.8 / 3600.0;
-            break;
-        case "bessel_rt90_5.0_gon_v":
-            $this->bessel_params();
-            $this->central_meridian = 13.0 + 33.0 / 60.0 + 29.8 / 3600.0;
-            break;
-        case "bessel_rt90_2.5_gon_v":
-            $this->bessel_params();
-            $this->central_meridian = 15.0 + 48.0 / 60.0 + 29.8 / 3600.0;
-            break;
-        case"bessel_rt90_0.0_gon_v":
-            $this->bessel_params();
-            $this->central_meridian = 18.0 + 3.0 / 60.0 + 29.8 / 3600.0;
-            break;
-        case "bessel_rt90_2.5_gon_o":
-            $this->bessel_params();
-            $this->central_meridian = 20.0 + 18.0 / 60.0 + 29.8 / 3600.0;
-            break;
-        case "bessel_rt90_5.0_gon_o":
-            $this->bessel_params();
-            $this->central_meridian = 22.0 + 33.0 / 60.0 + 29.8 / 3600.0;
-            break;
-        // SWEREF99TM and SWEREF99ddmm  parameters.
-        case "sweref_99_tm":
-            $this->sweref99_params();
-            $this->central_meridian = 15.00;
-            $this->scale = 0.9996;
-            $this->false_northing = 0.0;
-            $this->false_easting = 500000.0;
-            break;
-        case "sweref_99_1200":
-            $this->sweref99_params();
-            $this->central_meridian = 12.00;
-            break;
-        case "sweref_99_1330":
-            $this->sweref99_params();
-            $this->central_meridian = 13.50;
-            break;
-        case "sweref_99_1500":
-            $this->sweref99_params();
-            $this->central_meridian = 15.00;
-            break;
-        case "sweref_99_1630":
-            $this->sweref99_params();
-            $this->central_meridian = 16.50;
-            break;
-        case "sweref_99_1800":
-            $this->sweref99_params();
-            $this->central_meridian = 18.00;
-            break;
-        case "sweref_99_1415":
-            $this->sweref99_params();
-            $this->central_meridian = 14.25;
-            break;
-        case "sweref_99_1545":
-            $this->sweref99_params();
-            $this->central_meridian = 15.75;
-            break;
-        case "sweref_99_1715":
-            $this->sweref99_params();
-            $this->central_meridian = 17.25;
-            break;
-        case "sweref_99_1845":
-            $this->sweref99_params();
-            $this->central_meridian = 18.75;
-            break;
-        case "sweref_99_2015":
-            $this->sweref99_params();
-            $this->central_meridian = 20.25;
-            break;
-        case "sweref_99_2145":
-            $this->sweref99_params();
-            $this->central_meridian = 21.75;
-            break;
-        case "sweref_99_2315":
-            $this->sweref99_params();
-            $this->central_meridian = 23.25;
-            break;
-        default:
-          $this->central_meridian = NAN;
-      }
+        switch ($projection) {
+            case 'RT90_7.5_GON_V':
+                $this->grs80_params();
+                $this->central_meridian = 11.0 + 18.375 / 60.0;
+                $this->scale = 1.000006000000;
+                $this->false_northing = -667.282;
+                $this->false_easting = 1500025.141;
+                break;
+            case 'RT90_5.0_GON_V':
+                $this->grs80_params();
+                $this->central_meridian = 13.0 + 33.376 / 60.0;
+                $this->scale = 1.000005800000;
+                $this->false_northing = -667.130;
+                $this->false_easting = 1500044.695;
+                break;
+            case 'RT90_2.5_GON_V':
+                $this->grs80_params();
+                $this->central_meridian = 15.0 + 48.0 / 60.0 + 22.624306 / 3600.0;
+                $this->scale = 1.00000561024;
+                $this->false_northing = -667.711;
+                $this->false_easting = 1500064.274;
+                break;
+            case 'RT90_0.0_GON_V':
+                $this->grs80_params();
+                $this->central_meridian = 18.0 + 3.378 / 60.0;
+                $this->scale = 1.000005400000;
+                $this->false_northing = -668.844;
+                $this->false_easting = 1500083.521;
+                break;
+            case 'RT90_2.5_GON_O':
+                $this->grs80_params();
+                $this->central_meridian = 20.0 + 18.379 / 60.0;
+                $this->scale = 1.000005200000;
+                $this->false_northing = -670.706;
+                $this->false_easting = 1500102.765;
+                break;
+            case 'RT90_5.0_GON_O':
+                $this->grs80_params();
+                $this->central_meridian = 22.0 + 33.380 / 60.0;
+                $this->scale = 1.000004900000;
+                $this->false_northing = -672.557;
+                $this->false_easting = 1500121.846;
+                break;
+            // RT90 parameters, Bessel 1841 ellipsoid.
+            case 'BESSEL_RT90_7.5_GON_V':
+                $this->bessel_params();
+                $this->central_meridian = 11.0 + 18.0 / 60.0 + 29.8 / 3600.0;
+                break;
+            case 'BESSEL_RT90_5.0_GON_V':
+                $this->bessel_params();
+                $this->central_meridian = 13.0 + 33.0 / 60.0 + 29.8 / 3600.0;
+                break;
+            case 'BESSEL_RT90_2.5_GON_V':
+                $this->bessel_params();
+                $this->central_meridian = 15.0 + 48.0 / 60.0 + 29.8 / 3600.0;
+                break;
+            case 'BESSEL_RT90_0.0_GON_V':
+                $this->bessel_params();
+                $this->central_meridian = 18.0 + 3.0 / 60.0 + 29.8 / 3600.0;
+                break;
+            case 'BESSEL_RT90_2.5_GON_O':
+                $this->bessel_params();
+                $this->central_meridian = 20.0 + 18.0 / 60.0 + 29.8 / 3600.0;
+                break;
+            case 'BESSEL_RT90_5.0_GON_O':
+                $this->bessel_params();
+                $this->central_meridian = 22.0 + 33.0 / 60.0 + 29.8 / 3600.0;
+                break;
+            // SWEREF99TM and SWEREF99ddmm  parameters.
+            case 'SWEREF_99_TM':
+                $this->sweref99_params();
+                $this->central_meridian = 15.00;
+                $this->scale = 0.9996;
+                $this->false_northing = 0.0;
+                $this->false_easting = 500000.0;
+                break;
+            case 'SWEREF_99_1200':
+                $this->sweref99_params();
+                $this->central_meridian = 12.00;
+                break;
+            case 'SWEREF_99_1330':
+                $this->sweref99_params();
+                $this->central_meridian = 13.50;
+                break;
+            case 'SWEREF_99_1500':
+                $this->sweref99_params();
+                $this->central_meridian = 15.00;
+                break;
+            case 'SWEREF_99_1630':
+                $this->sweref99_params();
+                $this->central_meridian = 16.50;
+                break;
+            case 'SWEREF_99_1800':
+                $this->sweref99_params();
+                $this->central_meridian = 18.00;
+                break;
+            case 'SWEREF_99_1415':
+                $this->sweref99_params();
+                $this->central_meridian = 14.25;
+                break;
+            case 'SWEREF_99_1545':
+                $this->sweref99_params();
+                $this->central_meridian = 15.75;
+                break;
+            case 'SWEREF_99_1715':
+                $this->sweref99_params();
+                $this->central_meridian = 17.25;
+                break;
+            case 'SWEREF_99_1845':
+                $this->sweref99_params();
+                $this->central_meridian = 18.75;
+                break;
+            case 'SWEREF_99_2015':
+                $this->sweref99_params();
+                $this->central_meridian = 20.25;
+                break;
+            case 'SWEREF_99_2145':
+                $this->sweref99_params();
+                $this->central_meridian = 21.75;
+                break;
+            case 'SWEREF_99_2315':
+                $this->sweref99_params();
+                $this->central_meridian = 23.25;
+                break;
+            default:
+                $this->central_meridian = NAN;
+        }
     }
 
     // Sets of default parameters.
-    private function grs80_params() {
+    private function grs80_params()
+    {
         $this->axis = 6378137.0; // GRS 80.
         $this->flattening = 1.0 / 298.257222101; // GRS 80.
         $this->central_meridian = NAN;
     }
 
-    private function bessel_params() {
+    private function bessel_params()
+    {
         $this->axis = 6377397.155; // Bessel 1841.
         $this->flattening = 1.0 / 299.1528128; // Bessel 1841.
         $this->central_meridian = NAN;
@@ -178,7 +185,8 @@ class GaussKreuger {
         $this->false_easting = 1500000.0;
     }
 
-    private function sweref99_params() {
+    private function sweref99_params()
+    {
         $this->axis = 6378137.0; // GRS 80.
         $this->flattening = 1.0 / 298.257222101; // GRS 80.
         $this->central_meridian = NAN;
@@ -188,7 +196,8 @@ class GaussKreuger {
     }
 
     // Conversion from geodetic coordinates to grid coordinates.
-    public function geodetic_to_grid($latitude, $longitude) {
+    public function geodetic_to_grid($latitude, $longitude)
+    {
         $x_y = array();
 
         // Prepare ellipsoid-based stuff.
@@ -238,10 +247,11 @@ class GaussKreuger {
     }
 
     // Conversion from grid coordinates to geodetic coordinates.
-    public function grid_to_geodetic($x, $y) {
+    public function grid_to_geodetic($x, $y)
+    {
         $lat_lon = array();
-        if(is_nan($this->central_meridian)) {
-          return $lat_lon;
+        if (is_nan($this->central_meridian)) {
+            return $lat_lon;
         }
         // Prepare ellipsoid-based stuff.
         $e2 = $this->flattening * (2.0 - $this->flattening);
@@ -282,18 +292,22 @@ class GaussKreuger {
                 $Dstar * pow(sin($phi_star), 6));
         $lat_lon[0] = $lat_radian * 180.0 / M_PI;
         $lat_lon[1] = $lon_radian * 180.0 / M_PI;
+
         return $lat_lon;
     }
 
-    private function math_sinh($value) {
-      return 0.5 * (exp($value) - exp(-$value));
+    private function math_sinh($value)
+    {
+        return 0.5 * (exp($value) - exp(-$value));
     }
 
-    private function math_cosh($value) {
-      return 0.5 * (exp($value) + exp(-$value));
+    private function math_cosh($value)
+    {
+        return 0.5 * (exp($value) + exp(-$value));
     }
 
-    private function math_atanh($value) {
-      return 0.5 * log((1.0 + $value) / (1.0 - $value));
+    private function math_atanh($value)
+    {
+        return 0.5 * log((1.0 + $value) / (1.0 - $value));
     }
 }

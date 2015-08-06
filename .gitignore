@@ -1,7 +1,5 @@
-/nbproject
-/build
-/bin
-/test/simpletest
-*.class
-.project
-.classpath
+composer.lock
+composer.phar
+phpunit.xml
+bin/
+vendor/

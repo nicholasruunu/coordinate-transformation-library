@@ -1,6 +1,6 @@
 <?php
 /**
- *  CoordinateTransformationLibrary - David Gustafsson 2012
+ *  CoordinateTransformationLibrary - David Gustafsson 2012.
  *
  *  RT90, SWEREF99 and WGS84 coordinate transformation library
  *
@@ -16,10 +16,11 @@
  *
  * License: http://creativecommons.org/licenses/by-nc-sa/3.0/
  */
+namespace Drola\CoordinateTransformationLibrary\Position;
 
-/**
- * Signals that an error has been reached unexpectedly while parsing. 
- * 
- */
-class ParseException extends Exception {
+abstract class WGS84Format
+{
+    const DEGREES = 0;
+    const DEGREES_MINUTES = 1;
+    const DEGREES_MINUTES_SECONDS = 2;
 }
