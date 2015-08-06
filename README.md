@@ -3,6 +3,11 @@ Coordinate Transformation Library
 
 This library is a fork of https://github.com/david-xelera/CoordinateTransformationLibrary and converted to a Composer package.
 
+Installation
+------------
+
+      composer install drola/CoordinateTransformationLibrary
+
 For usage examples take a look at the unit tests in `tests/` folder.
 
 Original README
