@@ -6,7 +6,7 @@ This library is a fork of https://github.com/david-xelera/CoordinateTransformati
 Installation
 ------------
 
-      composer install drola/CoordinateTransformationLibrary
+      composer install drola/coordinate-transformation-library
 
 For usage examples take a look at the unit tests in `tests/` folder.
 
